@@ -3,9 +3,9 @@
 Nodo comunitario open source para fabricar, comprobar y revocar GOVP desde un
 workflow n8n sin escribir código.
 
-> Estado `0.1.0`: candidato técnico. El paquete y su contrato están probados,
-> pero falta instalarlo y ejecutar un flujo de aceptación en una instancia n8n
-> independiente antes de marcar validación nativa.
+> Estado `0.1.1`: listo para piloto. El artefacto se ha instalado y ejecutado
+> en n8n 2.34.6; la aceptación nativa comprueba emisión e idempotencia con dos
+> ejecuciones consecutivas.
 
 ## Operaciones
 
@@ -17,17 +17,17 @@ La credencial guarda la URL de Exchange y el token del conector como campo de
 contraseña. El nodo exige HTTPS fuera de simuladores locales y admite
 `Continue On Fail` para que el workflow decida cómo manejar una incidencia.
 
-## Instalación del candidato
+## Instalación
 
 Descarga el paquete desde Releases e instálalo en una instancia de prueba:
 
 ```bash
-npm install ./n8n-nodes-govp-0.1.0.tgz
+npm install ./n8n-nodes-govp-0.1.1.tgz
 ```
 
 La [documentación oficial de n8n](https://docs.n8n.io/integrations/community-nodes/installation-and-management)
-explica la instalación de nodos comunitarios. No instales un candidato en
-producción antes de completar la aceptación nativa.
+explica la instalación de nodos comunitarios. Completa primero un piloto con
+credenciales y datos no productivos de tu organización.
 
 ## Credentials
 
@@ -60,6 +60,17 @@ npm pack
 
 El paquete sigue los ficheros base y de credenciales documentados por n8n y
 publica únicamente `dist`, README y licencia.
+
+La aceptación nativa requiere Docker, Node.js y OpenSSL. Genera primero el
+paquete y ejecuta:
+
+```bash
+bash tests/native/run.sh
+```
+
+La prueba levanta un Exchange HTTPS local con certificado efímero, instala el
+paquete en el runtime oficial de n8n y exige una primera emisión seguida de una
+repetición idempotente. No usa secretos ni servicios de producción.
 
 ## Licencia
 

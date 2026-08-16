@@ -1,0 +1,57 @@
+{
+  "id": "govp-native-acceptance-v2",
+  "name": "GOVP native acceptance",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [-240, 0],
+      "id": "node-native-trigger",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "issue",
+        "issuerName": "Empresa n8n ficticia",
+        "recipientName": "Cliente ficticio",
+        "subjectType": "shipment",
+        "subjectId": "SHIP-NATIVE-1",
+        "subjectName": "Envío de prueba nativa",
+        "requirement": "Prueba reproducible del nodo comunitario GOVP",
+        "evidenceJson": "[{\"label\":\"Native test\",\"sha256\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}]",
+        "validUntil": "2027-08-16T00:00:00.000Z",
+        "externalId": "SHIP-NATIVE-1",
+        "idempotencyKey": "n8n-native:SHIP-NATIVE-1"
+      },
+      "type": "n8n-nodes-govp.govp",
+      "typeVersion": 1,
+      "position": [0, 0],
+      "id": "node-govp-native",
+      "name": "GOVP",
+      "credentials": {
+        "govpExchangeApi": {
+          "id": "cred-govp-native",
+          "name": "GOVP Native Test"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "GOVP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

@@ -1,11 +1,11 @@
 {
   "name": "n8n-nodes-govp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Community n8n node for issuing, verifying and revoking GOVP through GOVP Exchange.",
   "license": "Apache-2.0",
   "homepage": "https://github.com/gemacode/govp-for-n8n#readme",
   "repository": { "type": "git", "url": "git+https://github.com/gemacode/govp-for-n8n.git" },
-  "type": "module",
+  "type": "commonjs",
   "main": "dist/nodes/Govp/Govp.node.js",
   "types": "dist/nodes/Govp/Govp.node.d.ts",
   "files": ["dist", "README.md", "LICENSE"],
