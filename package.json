@@ -1,0 +1,32 @@
+{
+  "name": "n8n-nodes-govp",
+  "version": "0.1.0",
+  "description": "Community n8n node for issuing, verifying and revoking GOVP through GOVP Exchange.",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/gemacode/govp-for-n8n#readme",
+  "repository": { "type": "git", "url": "git+https://github.com/gemacode/govp-for-n8n.git" },
+  "type": "module",
+  "main": "dist/nodes/Govp/Govp.node.js",
+  "types": "dist/nodes/Govp/Govp.node.d.ts",
+  "files": ["dist", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "check": "npm run typecheck && npm test && npm run build",
+    "prepack": "npm run check"
+  },
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": ["dist/credentials/GovpExchangeApi.credentials.js"],
+    "nodes": ["dist/nodes/Govp/Govp.node.js"]
+  },
+  "keywords": ["n8n-community-node-package", "n8n", "govp", "traceability", "compliance"],
+  "peerDependencies": { "n8n-workflow": ">=1.121.0" },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "n8n-workflow": "^2.16.0",
+    "typescript": "~5.9.3",
+    "vitest": "^4.1.0"
+  }
+}

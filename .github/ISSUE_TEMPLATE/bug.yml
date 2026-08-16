@@ -1,0 +1,20 @@
+name: Error reproducible
+description: Comunica un error sin incluir tokens ni workflows reales.
+title: "[Bug] "
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes: { label: Versión }
+    validations: { required: true }
+  - type: textarea
+    id: reproduction
+    attributes: { label: Reproducción anonimizada }
+    validations: { required: true }
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Seguridad
+      options:
+        - label: He eliminado tokens, URLs privadas y datos de workflows.
+          required: true
