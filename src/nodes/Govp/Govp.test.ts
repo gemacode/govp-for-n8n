@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { GovpExchangeApi } from '../../credentials/GovpExchangeApi.credentials.js';
 import { Govp } from './Govp.node.js';
+import { GovpTrigger } from './GovpTrigger.node.js';
 import { buildIssueBody, normalizeBaseUrl, parseEvidence, validateIdempotencyKey } from './shared.js';
+import { GOVP_WEBHOOK_SCHEMA, canonicalWebhookJson, verifyWebhookEnvelope, type SignedWebhookEnvelope } from './webhooks.js';
 
 describe('n8n GOVP node', () => {
   it('declara tres operaciones y una credencial obligatoria', () => {
@@ -39,5 +41,25 @@ describe('n8n GOVP node', () => {
     expect(() => normalizeBaseUrl('http://example.com/api')).toThrow(/HTTPS/);
     expect(normalizeBaseUrl('https://partners.gemacode.org/api/exchange/')).toBe('https://partners.gemacode.org/api/exchange');
     expect(normalizeBaseUrl('http://localhost:8788')).toBe('http://localhost:8788');
+  });
+
+  it('declara un trigger webhook para eventos GOVP seleccionables', () => {
+    const trigger = new GovpTrigger();
+    expect(trigger.description.group).toEqual(['trigger']);
+    expect(trigger.description.webhooks?.[0]).toMatchObject({ httpMethod: 'POST', responseMode: 'onReceived' });
+    expect(trigger.description.properties.find((item) => item.name === 'events')?.type).toBe('multiOptions');
+  });
+
+  it('verifica el evento solo contra una clave confiable y dentro de su ventana', async () => {
+    const pair = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']) as CryptoKeyPair;
+    const publicJwk = await crypto.subtle.exportKey('jwk', pair.publicKey) as JsonWebKey;
+    const event = { schema: GOVP_WEBHOOK_SCHEMA, id: 'event-1', type: 'govp.issued' as const, occurredAt: '2026-08-17T14:00:00Z', connectorId: 'connector-1', data: { requestId: null, issuanceId: 'issuance-1', metadata: {} } };
+    const canonical = canonicalWebhookJson(event);
+    const digest = Buffer.from(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(canonical))).toString('hex');
+    const signature = Buffer.from(await crypto.subtle.sign({ name: 'ECDSA', hash: 'SHA-256' }, pair.privateKey, new TextEncoder().encode(canonical))).toString('base64url');
+    const envelope: SignedWebhookEnvelope = { event, payloadSha256: digest, signature: { algorithm: 'ECDSA_P256_SHA256', keyId: 'key-1', value: signature, publicJwk } };
+    await expect(verifyWebhookEnvelope(envelope, publicJwk, new Date('2026-08-17T14:01:00Z'))).resolves.toBe(true);
+    const other = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']) as CryptoKeyPair;
+    await expect(verifyWebhookEnvelope(envelope, await crypto.subtle.exportKey('jwk', other.publicKey) as JsonWebKey, new Date('2026-08-17T14:01:00Z'))).resolves.toBe(false);
   });
 });

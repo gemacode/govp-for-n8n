@@ -3,7 +3,7 @@
 Nodo comunitario open source para fabricar, comprobar y revocar GOVP desde un
 workflow n8n sin escribir código.
 
-> Estado `0.1.1`: listo para piloto. El artefacto se ha instalado y ejecutado
+> Estado `0.2.0`: listo para piloto. El nodo de acciones se ha instalado y ejecutado
 > en n8n 2.34.6; la aceptación nativa comprueba emisión e idempotencia con dos
 > ejecuciones consecutivas.
 
@@ -12,6 +12,8 @@ workflow n8n sin escribir código.
 - **Issue:** fabrica un GOVP con clave de idempotencia estable;
 - **Verify:** recupera estado, integridad y razón pública;
 - **Revoke:** revoca un GOVP propiedad del conector con una razón explícita.
+- **GOVP Trigger:** activa el workflow con eventos firmados de emisión,
+  comprobación, revocación o sustitución.
 
 La credencial guarda la URL de Exchange y el token del conector como campo de
 contraseña. El nodo exige HTTPS fuera de simuladores locales y admite
@@ -22,7 +24,7 @@ contraseña. El nodo exige HTTPS fuera de simuladores locales y admite
 Descarga el paquete desde Releases e instálalo en una instancia de prueba:
 
 ```bash
-npm install ./n8n-nodes-govp-0.1.1.tgz
+npm install ./n8n-nodes-govp-0.2.0.tgz
 ```
 
 La [documentación oficial de n8n](https://docs.n8n.io/integrations/community-nodes/installation-and-management)
@@ -38,6 +40,12 @@ credenciales y datos no productivos de tu organización.
 
 No incluyas el token en parámetros, expresiones, logs ni exportaciones del
 workflow.
+
+Al activar un `GOVP Trigger`, n8n registra su URL HTTPS en Exchange. Cada
+notificación se compara con la clave pública activa o retirada publicada por
+Exchange, se valida criptográficamente y se rechaza si está caducada o ya fue
+vista por el nodo. En producción, el workflow debe conservar además
+`event.id` en un almacén con unicidad duradera para garantizar replay atómico.
 
 ## Idempotencia
 

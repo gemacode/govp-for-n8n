@@ -1,6 +1,11 @@
 # Changelog
 
-## 0.1.1 - 2026-08-16
+## 0.2.0 — 2026-08-17
+
+- Trigger nativo que registra y elimina suscripciones de GOVP Exchange.
+- Verificación ECDSA contra el registro de claves y rechazo de eventos repetidos.
+
+## 0.1.1 — 2026-08-16
 
 - Compile the community node as CommonJS for native n8n loading.
 - Add a reproducible native acceptance fixture for installation, execution and idempotent replay.
