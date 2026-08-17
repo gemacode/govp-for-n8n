@@ -24,7 +24,7 @@
   "keywords": ["n8n-community-node-package", "n8n", "govp", "traceability", "compliance"],
   "peerDependencies": { "n8n-workflow": ">=1.121.0" },
   "devDependencies": {
-    "@types/node": "^24.10.1",
+    "@types/node": "^26.2.0",
     "n8n-workflow": "^2.16.0",
     "typescript": "~5.9.3",
     "vitest": "^4.1.0"
