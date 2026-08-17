@@ -16,6 +16,20 @@ export type SignedWebhookEnvelope = {
 };
 
 const encoder = new TextEncoder();
+const recentEventKeys = new Set<string>();
+const recentEventOrder: string[] = [];
+const recentEventLimit = 500;
+
+export function registerWebhookEvent(eventKey: string): boolean {
+  if (recentEventKeys.has(eventKey)) return false;
+  recentEventKeys.add(eventKey);
+  recentEventOrder.push(eventKey);
+  while (recentEventOrder.length > recentEventLimit) {
+    const oldest = recentEventOrder.shift();
+    if (oldest) recentEventKeys.delete(oldest);
+  }
+  return true;
+}
 function compareUtf8(left: string, right: string) {
   const a = encoder.encode(left); const b = encoder.encode(right);
   for (let index = 0; index < Math.min(a.length, b.length); index += 1) {

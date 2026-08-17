@@ -3,7 +3,7 @@ import type {
 } from 'n8n-workflow';
 import { NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
 import { normalizeBaseUrl } from './shared.js';
-import { verifyWebhookEnvelope, webhookEventTypes, type SignedWebhookEnvelope, type WebhookEventType } from './webhooks.js';
+import { registerWebhookEvent, verifyWebhookEnvelope, webhookEventTypes, type SignedWebhookEnvelope, type WebhookEventType } from './webhooks.js';
 
 type WebhookList = { webhooks: Array<{ id: string; status: string }> };
 
@@ -84,7 +84,8 @@ export class GovpTrigger implements INodeType {
       || !await verifyWebhookEnvelope(envelope, trusted.key.publicJwk)) return rejectWebhook(this, 401, 'Invalid GOVP signature');
     const data = this.getWorkflowStaticData('node');
     const seen = Array.isArray(data.seenEventIds) ? data.seenEventIds as string[] : [];
-    if (seen.includes(envelope.event.id)) return rejectWebhook(this, 409, 'Repeated GOVP event');
+    if (seen.includes(envelope.event.id)
+      || !registerWebhookEvent(`${baseUrl}\u0000${envelope.event.id}`)) return rejectWebhook(this, 409, 'Repeated GOVP event');
     data.seenEventIds = [...seen.slice(-499), envelope.event.id];
     return { workflowData: [this.helpers.returnJsonArray([{ event: envelope.event, signature: envelope.signature } as IDataObject])] };
   }

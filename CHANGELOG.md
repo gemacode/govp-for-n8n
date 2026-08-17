@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.1 — 2026-08-17
+
+- trigger firmado validado nativamente en n8n 2.34.6 con callback HTTPS;
+- caché acotada por proceso para rechazar replay inmediato, complementaria al
+  historial estático del workflow y al almacén duradero recomendado;
+- aceptación reproducible de alta, entrega, ejecución y rechazo `409`.
+
 ## 0.2.0 — 2026-08-17
 
 - Trigger nativo que registra y elimina suscripciones de GOVP Exchange.

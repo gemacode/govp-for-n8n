@@ -3,9 +3,9 @@
 Nodo comunitario open source para fabricar, comprobar y revocar GOVP desde un
 workflow n8n sin escribir código.
 
-> Estado `0.2.0`: listo para piloto. El nodo de acciones se ha instalado y ejecutado
-> en n8n 2.34.6; la aceptación nativa comprueba emisión e idempotencia con dos
-> ejecuciones consecutivas.
+> Estado `0.2.1`: listo. El nodo de acciones y el trigger firmado se han instalado
+> y ejecutado en n8n 2.34.6. La aceptación nativa comprueba emisión idempotente,
+> alta del webhook, entrega firmada, ejecución y rechazo de replay.
 
 ## Operaciones
 
@@ -24,7 +24,7 @@ contraseña. El nodo exige HTTPS fuera de simuladores locales y admite
 Descarga el paquete desde Releases e instálalo en una instancia de prueba:
 
 ```bash
-npm install ./n8n-nodes-govp-0.2.0.tgz
+npm install ./n8n-nodes-govp-0.2.1.tgz
 ```
 
 La [documentación oficial de n8n](https://docs.n8n.io/integrations/community-nodes/installation-and-management)
@@ -76,9 +76,17 @@ paquete y ejecuta:
 bash tests/native/run.sh
 ```
 
-La prueba levanta un Exchange HTTPS local con certificado efímero, instala el
-paquete en el runtime oficial de n8n y exige una primera emisión seguida de una
-repetición idempotente. No usa secretos ni servicios de producción.
+Las pruebas levantan un Exchange HTTPS local con certificado efímero, instalan
+el paquete en el runtime oficial de n8n y comprueban tanto la emisión idempotente
+como el trigger con una callback HTTPS efímera:
+
+```bash
+bash tests/native/run-trigger.sh
+```
+
+El segundo recorrido exige alta del webhook, firma ECDSA válida, ejecución
+correcta y rechazo `409` del mismo evento. No usa secretos ni servicios de
+producción.
 
 ## Licencia
 

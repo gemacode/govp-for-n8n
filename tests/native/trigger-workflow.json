@@ -1,0 +1,24 @@
+{
+  "id": "govp-native-trigger-v2",
+  "name": "GOVP native trigger acceptance",
+  "nodes": [
+    {
+      "parameters": { "events": ["govp.issued"] },
+      "type": "n8n-nodes-govp.govpTrigger",
+      "typeVersion": 1,
+      "position": [0, 0],
+      "id": "node-govp-native-trigger",
+      "webhookId": "9db5f496-5ac2-4c41-89aa-873ad969bb4f",
+      "name": "GOVP Trigger",
+      "credentials": {
+        "govpExchangeApi": {
+          "id": "cred-govp-native",
+          "name": "GOVP Native Test"
+        }
+      }
+    }
+  ],
+  "connections": {},
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}

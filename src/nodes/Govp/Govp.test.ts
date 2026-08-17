@@ -3,7 +3,7 @@ import { GovpExchangeApi } from '../../credentials/GovpExchangeApi.credentials.j
 import { Govp } from './Govp.node.js';
 import { GovpTrigger } from './GovpTrigger.node.js';
 import { buildIssueBody, normalizeBaseUrl, parseEvidence, validateIdempotencyKey } from './shared.js';
-import { GOVP_WEBHOOK_SCHEMA, canonicalWebhookJson, verifyWebhookEnvelope, type SignedWebhookEnvelope } from './webhooks.js';
+import { GOVP_WEBHOOK_SCHEMA, canonicalWebhookJson, registerWebhookEvent, verifyWebhookEnvelope, type SignedWebhookEnvelope } from './webhooks.js';
 
 describe('n8n GOVP node', () => {
   it('declara tres operaciones y una credencial obligatoria', () => {
@@ -61,5 +61,11 @@ describe('n8n GOVP node', () => {
     await expect(verifyWebhookEnvelope(envelope, publicJwk, new Date('2026-08-17T14:01:00Z'))).resolves.toBe(true);
     const other = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']) as CryptoKeyPair;
     await expect(verifyWebhookEnvelope(envelope, await crypto.subtle.exportKey('jwk', other.publicKey) as JsonWebKey, new Date('2026-08-17T14:01:00Z'))).resolves.toBe(false);
+  });
+
+  it('rechaza un replay inmediato dentro del mismo runtime n8n', () => {
+    const eventKey = `native-test:${crypto.randomUUID()}`;
+    expect(registerWebhookEvent(eventKey)).toBe(true);
+    expect(registerWebhookEvent(eventKey)).toBe(false);
   });
 });
