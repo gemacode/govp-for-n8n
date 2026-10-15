@@ -13,5 +13,5 @@ jobs:
         with: { node-version: 24, cache: npm }
       - run: npm ci
       - run: npm pack
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v3
         with: { files: n8n-nodes-govp-*.tgz }
